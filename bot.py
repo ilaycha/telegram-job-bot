@@ -1,9 +1,15 @@
 import os
-from telegram import Update
+
+from telegram import (
+    Update,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+)
 from telegram.ext import (
     Application,
     CommandHandler,
     MessageHandler,
+    CallbackQueryHandler,
     ContextTypes,
     filters,
 )
@@ -21,15 +27,63 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
+    user_id = update.effective_user.id
+
+    keyboard = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton(
+                    "✅ Одобрить",
+                    callback_data=f"approve:{user_id}",
+                ),
+                InlineKeyboardButton(
+                    "❌ Отклонить",
+                    callback_data=f"reject:{user_id}",
+                ),
+            ]
+        ]
+    )
 
     await context.bot.send_message(
         chat_id=ADMIN_ID,
-        text=f"📥 Новая вакансия:\n\n{text}",
+        text=f"📥 Новая вакансия\n\n{text}",
+        reply_markup=keyboard,
     )
 
     await update.message.reply_text(
-        "✅ Спасибо! Вакансия отправлена на модерацию."
+        "✅ Вакансия отправлена на модерацию."
     )
+
+
+async def button_handler(
+    update: Update,
+    context: ContextTypes.DEFAULT_TYPE,
+):
+    query = update.callback_query
+    await query.answer()
+
+    action, user_id = query.data.split(":")
+    user_id = int(user_id)
+
+    if action == "approve":
+        await context.bot.send_message(
+            chat_id=user_id,
+            text="✅ Ваша вакансия одобрена."
+        )
+
+        await query.edit_message_text(
+            query.message.text + "\n\n✅ Одобрено"
+        )
+
+    elif action == "reject":
+        await context.bot.send_message(
+            chat_id=user_id,
+            text="❌ Ваша вакансия отклонена."
+        )
+
+        await query.edit_message_text(
+            query.message.text + "\n\n❌ Отклонено"
+        )
 
 
 def main():
@@ -41,6 +95,10 @@ def main():
             filters.TEXT & ~filters.COMMAND,
             handle_message,
         )
+    )
+
+    app.add_handler(
+        CallbackQueryHandler(button_handler)
     )
 
     print("Bot started...")
