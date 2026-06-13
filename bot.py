@@ -1,4 +1,6 @@
 import os
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from telegram import (
     Update,
@@ -18,6 +20,28 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_ID = int(os.getenv("ADMIN_ID"))
 
 CHANNEL_USERNAME = "@poslesmenperm"
+
+
+# Фиктивный HTTP-сервер для Render
+class SimpleHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/plain')
+        self.end_headers()
+        self.wfile.write(b'Bot is running')
+    
+    def log_message(self, format, *args):
+        pass  # Отключаем логи сервера
+
+def run_server():
+    port = int(os.environ.get('PORT', 10000))
+    server = HTTPServer(('0.0.0.0', port), SimpleHandler)
+    print(f"Fake HTTP server running on port {port}")
+    server.serve_forever()
+
+# Запускаем сервер в отдельном потоке
+server_thread = threading.Thread(target=run_server, daemon=True)
+server_thread.start()
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
