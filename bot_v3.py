@@ -387,8 +387,9 @@ async def moderation_buttons(
     if action == "approve":
 
         await context.bot.send_message(
-            CHANNEL_USERNAME,
-            text
+            chat_id=CHANNEL_USERNAME,
+            text=text,
+            message_thread_id=5
         )
 
         await context.bot.send_message(
