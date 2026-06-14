@@ -280,9 +280,9 @@ async def preview_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    action = query.data
-    
-    if action == "new_vacancy":
+action = query.data
+
+if action == "new_vacancy":
     context.user_data.clear()
 
     await query.message.reply_text(
@@ -291,71 +291,73 @@ async def preview_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     return TITLE
 
-    if action == "restart_form":
-        context.user_data.clear()
+if action == "restart_form":
+    context.user_data.clear()
 
-        await query.message.reply_text(
-            "📌 Название вакансии?"
-        )
+    await query.message.reply_text(
+        "📌 Название вакансии?"
+    )
 
-        return TITLE
+    return TITLE
 
-    if action == "cancel_form":
-        context.user_data.clear()
+if action == "cancel_form":
+    context.user_data.clear()
 
-        await query.edit_message_text(
-            "❌ Создание вакансии отменено."
-        )
+    await query.edit_message_text(
+        "❌ Создание вакансии отменено."
+    )
 
-        return ConversationHandler.END
+    return ConversationHandler.END
 
-    if action == "send_moderation":
+if action == "send_moderation":
 
-        vacancy_text = build_vacancy_text(context.user_data)
+    vacancy_text = build_vacancy_text(context.user_data)
 
-        vacancy_id = str(query.message.message_id)
+    vacancy_id = str(query.message.message_id)
 
-        context.bot_data[vacancy_id] = {
-            "text": vacancy_text,
-            "user_id": query.from_user.id,
-        }
+    context.bot_data[vacancy_id] = {
+        "text": vacancy_text,
+        "user_id": query.from_user.id,
+    }
 
-        keyboard = InlineKeyboardMarkup([
-            [
-                InlineKeyboardButton(
-                    "✅ Одобрить",
-                    callback_data=f"approve:{vacancy_id}"
-                ),
-                InlineKeyboardButton(
-                    "❌ Отклонить",
-                    callback_data=f"reject:{vacancy_id}"
-                ),
-            ]
-        ])
+    keyboard = InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton(
+                "✅ Одобрить",
+                callback_data=f"approve:{vacancy_id}"
+            ),
+            InlineKeyboardButton(
+                "❌ Отклонить",
+                callback_data=f"reject:{vacancy_id}"
+            ),
+        ]
+    ])
 
-        await context.bot.send_message(
-            ADMIN_ID,
-            f"📥 Новая вакансия\n\n{vacancy_text}",
-            reply_markup=keyboard
-        )
+    await context.bot.send_message(
+        ADMIN_ID,
+        f"📥 Новая вакансия\n\n{vacancy_text}",
+        reply_markup=keyboard
+    )
 
-keyboard = InlineKeyboardMarkup([
-    [
-        InlineKeyboardButton(
-            "➕ Отправить ещё вакансию",
-            callback_data="new_vacancy"
-        )
-    ]
-])
+    keyboard = InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton(
+                "➕ Отправить ещё вакансию",
+                callback_data="new_vacancy"
+            )
+        ]
+    ])
 
-await query.edit_message_text(
-    "✅ Вакансия отправлена на модерацию.",
-    reply_markup=keyboard
-)
+    await query.edit_message_text(
+        "✅ Вакансия отправлена на модерацию.",
+        reply_markup=keyboard
+    )
 
-context.user_data.clear()
+    context.user_data.clear()
 
-return PREVIEW
+    return PREVIEW
+
+return ConversationHandler.END
 
     return ConversationHandler.END
 
