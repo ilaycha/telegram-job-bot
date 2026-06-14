@@ -281,6 +281,15 @@ async def preview_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     action = query.data
+    
+    if action == "new_vacancy":
+    context.user_data.clear()
+
+    await query.message.reply_text(
+        "📌 Название вакансии?"
+    )
+
+    return TITLE
 
     if action == "restart_form":
         context.user_data.clear()
@@ -330,13 +339,23 @@ async def preview_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=keyboard
         )
 
-        await query.edit_message_text(
-            "✅ Вакансия отправлена на модерацию."
+keyboard = InlineKeyboardMarkup([
+    [
+        InlineKeyboardButton(
+            "➕ Отправить ещё вакансию",
+            callback_data="new_vacancy"
         )
+    ]
+])
 
-        context.user_data.clear()
+await query.edit_message_text(
+    "✅ Вакансия отправлена на модерацию.",
+    reply_markup=keyboard
+)
 
-        return ConversationHandler.END
+context.user_data.clear()
+
+return PREVIEW
 
     return ConversationHandler.END
 
@@ -429,7 +448,7 @@ def main():
             PREVIEW: [
                 CallbackQueryHandler(
                     preview_buttons,
-                    pattern="^(send_moderation|restart_form|cancel_form)$"
+                    pattern="^(send_moderation|restart_form|cancel_form|new_vacancy)$"
                 )
             ],
         },
