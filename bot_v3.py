@@ -283,7 +283,7 @@ async def preview_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
     action = query.data
     
     if action == "new_vacancy":
-    context.user_data.clear()
+        context.user_data.clear()
 
         await query.message.reply_text(
         "📌 Название вакансии?"
