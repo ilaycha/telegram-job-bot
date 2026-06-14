@@ -29,21 +29,23 @@ TITLE, COMPANY, SALARY, SCHEDULE, DESCRIPTION, CONTACT, PREVIEW = range(7)
 # ---------- HTTP SERVER (для Render / health check) ----------
 class SimpleHandler(BaseHTTPRequestHandler):
     def do_GET(self):
+        self._send_ok()
+
+    def do_HEAD(self):
+        """HEAD-запрос от Uptime Robot — отвечаем без тела."""
+        self._send_ok()
+
+    def _send_ok(self):
+        """Общий метод для 200 OK."""
         self.send_response(200)
         self.send_header("Content-type", "text/plain")
         self.end_headers()
-        self.wfile.write(b"Bot is running")
+        # Тело нужно только для GET
+        if self.command == "GET":
+            self.wfile.write(b"Bot is running")
 
     def log_message(self, format, *args):
         pass
-
-def run_server():
-    port = int(os.environ.get("PORT", 10000))
-    server = HTTPServer(("0.0.0.0", port), SimpleHandler)
-    server.serve_forever()
-
-threading.Thread(target=run_server, daemon=True).start()
-
 # ---------- HELPERS ----------
 def build_skip_keyboard(next_callback: str) -> InlineKeyboardMarkup:
     """Универсальная кнопка «Пропустить»."""
