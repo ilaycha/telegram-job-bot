@@ -277,7 +277,7 @@ async def v_preview_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.send_message(
                 MODERATION_GROUP_ID,
-                f"📥 Новая вакансия\n\n{text}",
+                f"Мира, 📥 Новая вакансия\n\n{text}",
                 reply_markup=keyboard,
             )
         except Exception:
@@ -419,7 +419,7 @@ async def r_preview_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.send_message(
                 MODERATION_GROUP_ID,
-                f"📥 Новое резюме\n\n{text}",
+                f"Мира, 📥 Новое резюме\n\n{text}",
                 reply_markup=keyboard,
             )
         except Exception:
