@@ -25,7 +25,7 @@ CHANNEL_USERNAME = "@poslesmenperm"
 
 # ID тем в канале
 VACANCY_THREAD_ID = 5   # тема для вакансий
-RESUME_THREAD_ID = 6    # тема для резюме
+RESUME_THREAD_ID = 72    # тема для резюме
 
 # Состояния
 MAIN_MENU = 0
