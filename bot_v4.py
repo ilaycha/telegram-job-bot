@@ -19,7 +19,7 @@ from telegram.ext import (
 
 # ---------- ENV ----------
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
+MODERATION_GROUP_ID = int(os.getenv("MODERATION_GROUP_ID", "0"))
 
 CHANNEL_USERNAME = "@poslesmenperm"
 
@@ -276,7 +276,7 @@ async def v_preview_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         try:
             await context.bot.send_message(
-                ADMIN_ID,
+                MODERATION_GROUP_ID,
                 f"📥 Новая вакансия\n\n{text}",
                 reply_markup=keyboard,
             )
@@ -418,7 +418,7 @@ async def r_preview_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         try:
             await context.bot.send_message(
-                ADMIN_ID,
+                MODERATION_GROUP_ID,
                 f"📥 Новое резюме\n\n{text}",
                 reply_markup=keyboard,
             )
