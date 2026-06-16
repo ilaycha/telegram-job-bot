@@ -21,7 +21,7 @@ MODERATION_GROUP_ID = int(os.getenv("MODERATION_GROUP_ID", "0"))
 
 CHANNEL_USERNAME = "@poslesmenperm"
 VACANCY_THREAD_ID = 5
-RESUME_THREAD_ID = 6
+RESUME_THREAD_ID = 72
 
 # Состояния
 MAIN_MENU = 0
@@ -218,7 +218,7 @@ async def v_preview_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
              InlineKeyboardButton("❌ Отклонить", callback_data=f"reject:{vacancy_id}")]
         ])
         try:
-            await context.bot.send_message(MODERATION_GROUP_ID, f"📥 Новая вакансия\n\n{text}", reply_markup=keyboard)
+            await context.bot.send_message(MODERATION_GROUP_ID, f"Мира, 📥 Новая вакансия\n\n{text}", reply_markup=keyboard)
         except Exception:
             await query.message.reply_text("⚠️ Не удалось отправить на модерацию.")
             return V_PREVIEW
@@ -334,7 +334,7 @@ async def r_preview_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE):
              InlineKeyboardButton("❌ Отклонить", callback_data=f"reject:{resume_id}")]
         ])
         try:
-            await context.bot.send_message(MODERATION_GROUP_ID, f"📥 Новое резюме\n\n{text}", reply_markup=keyboard)
+            await context.bot.send_message(MODERATION_GROUP_ID, f"Мира, 📥 Новое резюме\n\n{text}", reply_markup=keyboard)
         except Exception:
             await query.message.reply_text("⚠️ Не удалось отправить на модерацию.")
             return R_PREVIEW
