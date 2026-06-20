@@ -406,27 +406,27 @@ async def _publish_to_vk(text: str, peer_id: int):
         return None
     
     try:
-    print(f"📤 VK: отправка в peer_id={peer_id}, длина текста={len(text)}", flush=True)
+        print(f"📤 VK: отправка в peer_id={peer_id}, длина текста={len(text)}", flush=True)
 
-    # ПРОВЕРКА ДОСТУПА К БЕСЕДЕ
-    try:
-        conv = vk_api_instance.messages.getConversationsById(
-            peer_ids=peer_id
+        # ПРОВЕРКА ДОСТУПА К БЕСЕДЕ
+        try:
+            conv = vk_api_instance.messages.getConversationsById(
+                peer_ids=peer_id
+            )
+
+            print("🔍 CONVERSATION INFO:", flush=True)
+            print(conv, flush=True)
+
+        except Exception as e:
+            print(f"❌ НЕ МОГУ ПОЛУЧИТЬ ИНФОРМАЦИЮ О БЕСЕДЕ: {e}", flush=True)
+
+        result = vk_api_instance.messages.send(
+            peer_id=peer_id,
+            message=text,
+            random_id=get_random_id()
         )
-
-        print("🔍 CONVERSATION INFO:", flush=True)
-        print(conv, flush=True)
-
-    except Exception as e:
-        print(f"❌ НЕ МОГУ ПОЛУЧИТЬ ИНФОРМАЦИЮ О БЕСЕДЕ: {e}", flush=True)
-
-    result = vk_api_instance.messages.send(
-        peer_id=peer_id,
-        message=text,
-        random_id=get_random_id()
-    )
-        print(f"📤 VK: результат: {result}", flush=True)
-        return result
+            print(f"📤 VK: результат: {result}", flush=True)
+            return result
     except Exception as e:
         print(f"❌ VK: ошибка отправки: {e}", flush=True)
         traceback.print_exc()
