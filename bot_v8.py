@@ -1620,7 +1620,7 @@ async def main():
     global _telegram_app
     
     print("=" * 50, flush=True)
-    print("🔧 ВЕРСИЯ КОДА: 3.1 (исправлена ошибка command->commands)", flush=True)
+    print("🔧 ВЕРСИЯ КОДА: 3.2 (main_menu в ConversationHandler)", flush=True)
     print("=" * 50, flush=True)
     
     if not VACANCY_BOT_TOKEN:
@@ -1638,26 +1638,25 @@ async def main():
     # Глобальный обработчик ошибок
     telegram_app.add_error_handler(error_handler)
     
-    # ВАЖНО: Добавляем обработчики с ЯВНЫМИ группами
-    # Группа 0 - команды
-    # Группа 1 - callback'и (высокий приоритет)
-    # Группа 2 - ConversationHandler (низкий приоритет)
-    
     # Группа 0: Команды
     telegram_app.add_handler(CommandHandler("start", global_start), group=0)
     telegram_app.add_handler(CommandHandler("my", my_publications_command), group=0)
     telegram_app.add_handler(CommandHandler("adminstats", admin_stats), group=0)
     telegram_app.add_handler(CommandHandler("export", admin_export), group=0)
     
-    # Группа 1: Callback'и (обрабатываются первыми)
+    # Группа 1: Специфичные callback'и (модерация, удаление)
     telegram_app.add_handler(CallbackQueryHandler(moderation_buttons, pattern="^(approve|reject):"), group=1)
     telegram_app.add_handler(CallbackQueryHandler(delete_publication, pattern="^delete:"), group=1)
-    telegram_app.add_handler(CallbackQueryHandler(main_menu_handler, pattern="^(menu_vacancy|menu_resume|my_publications|main_menu)$"), group=1)
     
-    # Группа 2: ConversationHandler для пошагового создания
+    # Группа 2: ConversationHandler (ВСЁ внутри, включая главное меню)
     conv_handler = ConversationHandler(
-        entry_points=[],
+        entry_points=[
+            CallbackQueryHandler(main_menu_handler, pattern="^(menu_vacancy|menu_resume|my_publications|main_menu)$"),
+        ],
         states={
+            TGState.MAIN_MENU: [
+                CallbackQueryHandler(main_menu_handler, pattern="^(menu_vacancy|menu_resume|my_publications|main_menu)$"),
+            ],
             # Вакансия
             TGState.V_TITLE: [
                 MessageHandler(filters.TEXT & ~filters.COMMAND, make_step_handler("title", TGState.V_COMPANY, "🏢 Компания?")),
@@ -1730,10 +1729,11 @@ async def main():
             ],
         },
         fallbacks=[
+            CommandHandler("start", start_command),
             CallbackQueryHandler(handle_tg_cancel, pattern="^cancel_action$"),
         ],
         per_message=False,
-        name="step_conversation"
+        name="main_conversation"
     )
     
     telegram_app.add_handler(conv_handler, group=2)
