@@ -427,6 +427,7 @@ async def _publish_to_vk(text: str, peer_id: int):
         )
             print(f"📤 VK: результат: {result}", flush=True)
             return result
+            
     except Exception as e:
         print(f"❌ VK: ошибка отправки: {e}", flush=True)
         traceback.print_exc()
