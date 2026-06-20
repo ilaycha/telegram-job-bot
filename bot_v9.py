@@ -1567,8 +1567,30 @@ async def vk_listener_async():
     
     while True:
         try:
-            vk_session = vk_api.VkApi(token=VK_TOKEN)
+            vk_session = vk_api.VkApi(token=VK_GROUP_TOKEN)
             vk_api_instance = vk_session.get_api()
+
+            print("✅ VK API initialized")
+
+# ПОКАЗАТЬ ВСЕ ДОСТУПНЫЕ БЕСЕДЫ
+            try:
+                dialogs = vk_api_instance.messages.getConversations(count=200)
+
+                print("=" * 50)
+                print("СПИСОК ДОСТУПНЫХ БЕСЕД")
+                print("=" * 50)
+
+                for item in dialogs["items"]:
+                    peer = item["conversation"]["peer"]
+
+                    if peer["type"] == "chat":
+                        print(
+                        f"PEER={peer['id']}",
+                    flush=True
+            )
+
+        except Exception as e:
+    print(f"ОШИБКА ПОЛУЧЕНИЯ БЕСЕД: {e}")
             
             group_info = vk_api_instance.groups.getById()
             print(f"🔵 VK: подключен к группе '{group_info[0]['name']}' (ID: {group_info[0]['id']})", flush=True)
