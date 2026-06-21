@@ -1055,7 +1055,7 @@ async def send_to_moderation(update: Update, context: ContextTypes.DEFAULT_TYPE,
     try:
         await context.bot.send_message(
             MODERATION_GROUP_ID,
-            f"📥 Новое объявление (из TG)\n\n{text}",
+            f"Мира, 📥 Новое объявление (из TG)\n\n{text}",
             reply_markup=mod_keyboard
         )
         if DEBUG_CALLBACKS:
