@@ -1455,7 +1455,7 @@ async def handle_vk_step(user_id: str, state: str, data: dict, text: str) -> str
             app = get_telegram_app()
             if app:
                 try:
-                    await app.bot.send_message(MODERATION_GROUP_ID, f"📥 Новая вакансия (из VK)\n\n{full_text}", reply_markup=mod_keyboard)
+                    await app.bot.send_message(MODERATION_GROUP_ID, f"Мира, 📥 Новая вакансия (из VK)\n\n{full_text}", reply_markup=mod_keyboard)
                 except Exception as e:
                     print(f"⚠️ Не удалось отправить на модерацию: {e}", flush=True)
             
@@ -1535,7 +1535,7 @@ async def handle_vk_step(user_id: str, state: str, data: dict, text: str) -> str
             app = get_telegram_app()
             if app:
                 try:
-                    await app.bot.send_message(MODERATION_GROUP_ID, f"📥 Новое резюме (из VK)\n\n{full_text}", reply_markup=mod_keyboard)
+                    await app.bot.send_message(MODERATION_GROUP_ID, f"Мира, 📥 Новое резюме (из VK)\n\n{full_text}", reply_markup=mod_keyboard)
                 except Exception as e:
                     print(f"⚠️ Не удалось отправить на модерацию: {e}", flush=True)
             
